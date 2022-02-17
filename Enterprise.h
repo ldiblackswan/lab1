@@ -7,8 +7,9 @@
 // Абстрактный класс компании
 class Enterprise
 {
-public:
+protected:
     enum Type { Transnational, Government, Private };
+public:
     Enterprise() = default;
     Enterprise(const QString& company_name,
                const QList<QString> company_owners,
@@ -31,4 +32,26 @@ private:
     double m_area;
     uint m_numberOfEmployees;
 };
+
+class TransnationalEnterpise : public Enterprise
+{
+public:
+    Type getCompanyType() override;
+    double getTaxPerMonth() override;
+};
+
+class GovernmentEnterprise : public Enterprise
+{
+public:
+    Type getCompanyType() override;
+    double getTaxPerMonth() override;
+};
+
+class PrivateEnterprise : public Enterprise
+{
+public:
+    Type getCompanyType() override;
+    double getTaxPerMonth() override;
+};
+
 #endif // ENTERPRISE_H
