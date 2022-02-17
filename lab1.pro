@@ -5,7 +5,9 @@ CONFIG -= app_bundle
 
 SOURCES += \
         Enterprise.cpp \
+        EnterpriseRegistrySingleton.cpp \
         main.cpp
 
 HEADERS += \
-    Enterprise.h
+    Enterprise.h \
+    EnterpriseRegistrySingleton.h
