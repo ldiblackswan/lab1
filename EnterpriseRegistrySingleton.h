@@ -6,15 +6,16 @@
 class EnterpriseRegistrySingleton
 {
 protected:
-    EnterpriseRegistrySingleton(const QList<Enterprise* >& enterprises_list) : m_enterprises(enterprises_list) {}
+    EnterpriseRegistrySingleton() = default;
+    EnterpriseRegistrySingleton(const QList<Enterprise* > &enterprises_list);
 public:
     EnterpriseRegistrySingleton(EnterpriseRegistrySingleton& other) = delete;
     void operator= (const EnterpriseRegistrySingleton& cr) = delete;
 
-    static EnterpriseRegistrySingleton& getInstance();
+    static EnterpriseRegistrySingleton &getInstance();
 
-    void addEnterpise(const Enterprise& ent);
-    Enterprise& getEnterpriseByIndex(int index) const;
+    void addEnterpise(Enterprise& ent);
+    const Enterprise &getEnterpriseByIndex(int index) const;
     int getRegistrySize() const;
 
 private:
