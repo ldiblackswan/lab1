@@ -2,7 +2,6 @@
 #include "EnterpriseRegistrySingleton.h"
 #include <QTextStream>
 
-using namespace std;
 
 void showInfoByType(Enterprise::Type type,
                     EnterpriseRegistrySingleton& registry,
@@ -65,9 +64,44 @@ void showEnterprisesByOwner(const QString& owner,
     out << Qt::endl;
 }
 
+void showAverageParameters(EnterpriseRegistrySingleton& registry, QTextStream& out)
+{
+    for (int type = Enterprise::Type::Transnational; type <= Enterprise::Type::Government; type++)
+    {
+        switch (type) {
+        case Enterprise::Type::Transnational:
+            out << "Transnational companies: " << Qt::endl;
+            break;
+        case Enterprise::Type::Private:
+            out << "Private companies: " << Qt::endl;
+            break;
+        case Enterprise::Type::Government:
+            out << "Government companies: " << Qt::endl;
+            break;
+        }
+        int n = 0;
+        float sumIncome = 0;
+        float sumArea = 0;
+        float sumNumberOfEmployees = 0;
+        for (int i = 0; i < registry.getRegistrySize(); i++) {
+            if (type == registry.getEnterpriseByIndex(i).getEnterpriseType()) {
+                sumIncome += registry.getEnterpriseByIndex(i).getIncome();
+                sumArea += registry.getEnterpriseByIndex(i).getArea();
+                sumNumberOfEmployees += registry.getEnterpriseByIndex(i).getNumberOfEmployess();
+                n++;
+            }
+        }
+        out << "Average income = " << sumIncome / n << Qt::endl;
+        out << "Average area = " << sumArea / n << Qt::endl;
+        out << "Average number of employees = " << sumNumberOfEmployees / n << Qt::endl;
+    }
+}
+
 int main()
 {
     QTextStream out(stdout);
+    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setRealNumberPrecision(2);
     Enterprise* microsoft = new TransnationalEnterpise("Microsoft",
         QList<QString>() << "Bill Gates" << "Steve Ballmer", 100000000, 100000, 5000);
 
@@ -91,9 +125,13 @@ int main()
 
     // 1. Вывести в консоль информацию о предприятиях определённого типа.
     showInfoByType(Enterprise::Transnational, singleton, out);
+    out << Qt::endl;
     // 2. Вывести в консоль все предприятия, принадлежащие определённому владельцу.
+    out << Qt::endl;
     showEnterprisesByOwner("Bill Gates", singleton, out);
     // 3. Вывести в консоль средние показатели (доход, площадь, число сотрудников) предприятий для каждого из типов.
+    out << Qt::endl;
+    showAverageParameters(singleton, out);
     delete microsoft;
     delete skype;
     delete apple;
