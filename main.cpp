@@ -38,13 +38,44 @@ void showInfoByType(Enterprise::Type type,
     }
 }
 
+void showEnterprisesByOwner(const QString& owner,
+                            EnterpriseRegistrySingleton& registry,
+                            QTextStream& out)
+{
+    bool found = false;
+    if (!owner.isEmpty()) {
+        int companies_per_owner = 0;
+        for (int i = 0; i < registry.getRegistrySize(); i++)
+        {
+            for (int j = 0; j < registry.getEnterpriseByIndex(i).getEnterpriseOwners().size(); j++)
+            {
+                if (owner == registry.getEnterpriseByIndex(i).getEnterpriseOwners().at(j)) {
+                    if (companies_per_owner > 0)
+                        out << ", " << registry.getEnterpriseByIndex(i).getEnterpriseName();
+                    else
+                        out << owner << " owns " << registry.getEnterpriseByIndex(i).getEnterpriseName();
+                    companies_per_owner++;
+                    found = true;
+                }
+            }
+        }
+    }
+    if (!found)
+        out << "Nothing found!";
+    out << Qt::endl;
+}
+
 int main()
 {
     QTextStream out(stdout);
     Enterprise* microsoft = new TransnationalEnterpise("Microsoft",
         QList<QString>() << "Bill Gates" << "Steve Ballmer", 100000000, 100000, 5000);
 
-    Enterprise* apple = new PrivateEnterprise("Apple",
+    Enterprise* skype = new PrivateEnterprise("Skype",
+                                                       QList<QString>() << "Bill Gates", 5000000, 200000, 1000);
+
+
+    Enterprise* apple = new TransnationalEnterpise("Apple",
                                                   QList<QString>() << "Tim Cook" << "Bruce Sewell",
                                               14000000, 20000, 3000);
 
@@ -54,14 +85,17 @@ int main()
     EnterpriseRegistrySingleton& singleton = EnterpriseRegistrySingleton::getInstance();
 
     singleton.addEnterpise(*microsoft);
+    singleton.addEnterpise(*skype);
     singleton.addEnterpise(*apple);
     singleton.addEnterpise(*gazprom);
 
     // 1. Вывести в консоль информацию о предприятиях определённого типа.
-    showInfoByType(Enterprise::Private, singleton, out);
+    showInfoByType(Enterprise::Transnational, singleton, out);
     // 2. Вывести в консоль все предприятия, принадлежащие определённому владельцу.
+    showEnterprisesByOwner("Bill Gates", singleton, out);
     // 3. Вывести в консоль средние показатели (доход, площадь, число сотрудников) предприятий для каждого из типов.
     delete microsoft;
+    delete skype;
     delete apple;
     delete gazprom;
     return 0;
